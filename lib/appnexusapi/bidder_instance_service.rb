@@ -1,5 +1,4 @@
 class AppnexusApi::BidderInstanceService < AppnexusApi::Service
-
   def initialize(connection, bidder_id)
     @bidder_id = bidder_id
     super(connection)
@@ -9,10 +8,6 @@ class AppnexusApi::BidderInstanceService < AppnexusApi::Service
     "instance"
   end
 
-  def resource_class
-    AppnexusApi::BidderInstanceResource
-  end
-
   def uri_suffix
     "bidder-instance/#{@bidder_id}"
   end
@@ -20,5 +15,4 @@ class AppnexusApi::BidderInstanceService < AppnexusApi::Service
   def delete(id)
     raise AppnexusApi::NotImplemented, "To remove an instance, please set it to inactive."
   end
-
 end

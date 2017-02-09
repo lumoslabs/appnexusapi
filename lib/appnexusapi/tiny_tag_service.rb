@@ -9,12 +9,7 @@ class AppnexusApi::TinyTagService < AppnexusApi::Service
     "tinytag"
   end
 
-  def resource_class
-    AppnexusApi::TinyTagResource
-  end
-
   def uri_suffix
     "tt/#{@member_id}"
   end
-
 end
