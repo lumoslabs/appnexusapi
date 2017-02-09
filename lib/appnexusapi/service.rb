@@ -2,9 +2,11 @@ class AppnexusApi::Service
   DEFAULT_NUMBER_OF_ELEMENTS = 100
 
   def self.resource_class
-    @@resource_class ||= begin
-      resource_klass_name = self.class.name.split('::').last.sub(/Service\z/, 'Resource')
-      AppnexusApi.const_set(resource_klass_name, Class.new(AppnexusApi::Resource))
+    @resource_class ||= begin
+      resource_klass_name = self.name.split('::').last.sub(/Service\z/, 'Resource')
+      unless defined?("AppnexusApi::#{resource_klass_name}".constantize)
+        AppnexusApi.const_set(resource_klass_name, Class.new(AppnexusApi::Resource))
+      end
       AppnexusApi.const_get(resource_klass_name)
     end
   end
