@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe AppnexusApi::CreativeService do
-  let(:creative_service) do
-    AppnexusApi::CreativeService.new(connection, ENV['APPNEXUS_MEMBER_ID'])
-  end
+  include_context 'with an advertiser'
+
+  let(:creative_service) { described_class.new(connection) }
   let(:new_creative) do
     {
-      'campaign'  => 'default campaign',
+      'name'      => 'rspec test creative',
       'content'   => '<iframe src="helloword.html"></iframe>',
       'width'     => '300',
       'height'    => '250',
@@ -26,46 +26,57 @@ describe AppnexusApi::CreativeService do
         threads = []
         10.times do
           threads << Thread.new do
-            creative = creative_service.create(new_creative)
+            creative = creative_service.create(advertiser_url_params, new_creative)
             puts creative.dbg_info
           end
         end
         threads.map(&:join)
       end
     end.to_not raise_error
+
+    advertiser.delete
   end
 
   it 'supports a get operation' do
-    expect do
-      creative_service.get('start_element' => 0, 'num_elements' => 1)
-    end.to_not raise_error
+    VCR.use_cassette('creative_service_get') do
+      expect { creative_service.get('start_element' => 0, 'num_elements' => 1) }.to_not raise_error
+      advertiser.delete
+    end
   end
 
   context 'creating a new creative' do
     it 'supports creating a new creative' do
-      creative = creative_service.create(new_creative)
-      expect(creative.width).to eq 300
-      expect(creative.height).to eq 250
+      VCR.use_cassette('creative_service_create') do
+        creative = creative_service.create(advertiser_url_params, new_creative)
+        expect(creative.width).to eq(300)
+        expect(creative.height).to eq(250)
+        advertiser.delete
+      end
     end
   end
 
   context 'an existing creative' do
-    let(:existing_creative) { creative_service.create(new_creative) }
+    let(:existing_creative) { creative_service.create(advertiser_url_params, new_creative) }
 
     it 'supports changing attributes with the update action' do
-      expect(existing_creative.campaign).to eq 'default campaign'
-      existing_creative.update('campaign' => 'My Best Campaign Yet')
-      expect(existing_creative.campaign).to eq 'My Best Campaign Yet'
+      VCR.use_cassette('creative_service_update') do
+        expect(existing_creative.code).to be_nil
+        existing_creative.update(advertiser_url_params, code: "abc")
+        expect(existing_creative.code).to eq "abc"
+        advertiser.delete
+      end
     end
 
     it 'supports removing the creative' do
-      id = existing_creative.id
-      creative = creative_service.get('id' => id).first
-      expect(creative.id).to eq id
-      existing_creative.delete
-      creative = creative_service.get('id' => id)
-      expect(creative).to be_nil
+      VCR.use_cassette('creative_service_delete') do
+        id = existing_creative.id
+        creative = creative_service.get('id' => id).first
+        expect(creative.id).to eq id
+        existing_creative.delete(advertiser_url_params)
+        creative = creative_service.get('id' => id)
+        expect(creative).to be_nil
+        advertiser.delete
+      end
     end
   end
 end
-

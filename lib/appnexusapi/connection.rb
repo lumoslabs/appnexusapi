@@ -6,7 +6,7 @@ class AppnexusApi::Connection
   RATE_EXCEEDED_DEFAULT_TIMEOUT = 15
   # Inexplicably, sandbox uses the correct code of 429, while production uses 405? so
   # we just rely on the error message
-  RATE_EXCEEDED_ERROR = "RATE_EXCEEDED".freeze
+  RATE_EXCEEDED_ERROR = 'RATE_EXCEEDED'.freeze
 
   def initialize(config)
     @config = config
@@ -44,7 +44,11 @@ class AppnexusApi::Connection
 
   def get(route, params={}, headers={})
     params = params.delete_if {|key, value| value.nil? }
-    run_request(:get, @connection.build_url(route, params), nil, headers)
+    run_request(:get, build_url(route, params), nil, headers)
+  end
+
+  def build_url(route, params)
+    @connection.build_url(route, params)
   end
 
   def post(route, body=nil, headers={})
@@ -60,16 +64,17 @@ class AppnexusApi::Connection
   end
 
   def run_request(method, route, body, headers)
-    login if !is_authorized?
+    login unless is_authorized?
     response = {}
     begin
       loop do
-        response = @connection.run_request(
+        response = run_request_only(
           method,
           route,
           body,
           { 'Authorization' => @token }.merge(headers)
         )
+        break if response.body.empty? # Log level data download service returns a body of ""
         break unless response.body.fetch('response', {})['error_code'] == RATE_EXCEEDED_ERROR
         wait_time = response.headers['retry-after'] || RATE_EXCEEDED_DEFAULT_TIMEOUT
         log.info("received rate exceeded.  wait time: #{wait_time}s")
@@ -81,7 +86,7 @@ class AppnexusApi::Connection
       else
         @retry = true
         logout
-        run_request(method, route, body, headers)
+        response = run_request(method, route, body, headers)
       end
     rescue Faraday::Error::TimeoutError => _e
       raise AppnexusApi::Timeout, 'Timeout'
@@ -90,5 +95,14 @@ class AppnexusApi::Connection
     end
     log.debug(response.body)
     response
+  end
+
+  def run_request_only(method, route, body, headers)
+    @connection.run_request(
+      method,
+      route,
+      body,
+      { 'Authorization' => @token }.merge(headers)
+    )
   end
 end
