@@ -1,8 +1,6 @@
-class AppnexusApi::LogLevelDataService < AppnexusApi::Service
+class AppnexusApi::LogLevelDataService < AppnexusApi::ReadOnlyService
   def initialize(connection, options = {})
-    @read_only = true
     @siphon_name = options[:siphon_name]
-
     super(connection)
   end
 
