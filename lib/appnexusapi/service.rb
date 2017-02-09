@@ -96,28 +96,11 @@ class AppnexusApi::Service
     case key = resource_name(response)
     when plural_name, plural_uri_name
       response[key].map do |json|
-        resource_class.new(json, self, response['dbg'])
+        AppnexusApi::Resource.new(json, self, response['dbg'])
       end
     when name, uri_name
-      [resource_class.new(response[key], self, response['dbg'])]
+      [AppnexusApi::Resource.new(response[key], self, response['dbg'])]
     end
-  end
-
-  # For each service, define a corresponding Resource class that extends AppnexusApi::Resource
-  def self.resource_class
-    @resource_class ||= begin
-      resource_klass_name = self.name.split('::').last.sub(/Service\z/, 'Resource')
-      unless defined?("AppnexusApi::#{resource_klass_name}".constantize)
-        AppnexusApi.const_set(resource_klass_name, Class.new(AppnexusApi::Resource))
-      end
-      AppnexusApi.const_get(resource_klass_name)
-    end
-  end
-
-  private
-
-  def resource_class
-    self.class.resource_class
   end
 
   def resource_name(response)
