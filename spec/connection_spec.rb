@@ -16,7 +16,7 @@ describe AppnexusApi::Connection do
     #stub to raise error the first time and then return []
     counter = 0
     allow(subject).to receive(:login)
-    allow(subject).to receive(:run_request_only) do |arg|
+    allow(subject.connection).to receive(:run_request) do |arg|
       counter += 1
       raise AppnexusApi::Unauthorized.new if counter == 1
       Faraday::Response.new(body: { not_an_error: 1 })

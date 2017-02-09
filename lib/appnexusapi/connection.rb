@@ -6,7 +6,7 @@ module AppnexusApi
   class Connection
     RATE_EXCEEDED_DEFAULT_TIMEOUT = 15
 
-    attr_reader :logger
+    attr_reader :connection, :logger
 
     def initialize(config)
       @config = config
@@ -64,7 +64,7 @@ module AppnexusApi
       response = {}
 
       rate_limit_sleep = Proc.new do |exception, try, elapsed_time, next_interval|
-        seconds = /Retry after \d+s/.match(exception.message)[1]
+        seconds = /Retry after \d+s/.match(exception.message)[1] || RATE_EXCEEDED_DEFAULT_TIMEOUT
         @logger.info("Sleeping for #{seconds}s...")
         sleep seconds
       end
@@ -72,7 +72,7 @@ module AppnexusApi
       Retriable.retriable(on: Unauthorized, on_retry: Proc.new { logout }) do
         Retriable.retriable(on: RateLimitExceeded, on_retry: rate_limit_sleep) do
           begin
-            response = run_request_only(
+            response = @connection.run_request(
               method,
               route,
               body,
@@ -85,15 +85,6 @@ module AppnexusApi
       end
 
       response
-    end
-
-    def run_request_only(method, route, body, headers)
-      @connection.run_request(
-        method,
-        route,
-        body,
-        { 'Authorization' => @token }.merge(headers)
-      )
     end
   end
 end
