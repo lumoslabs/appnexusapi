@@ -21,10 +21,6 @@ module AppnexusApi
       end
     end
 
-    def is_authorized?
-      !@token.nil?
-    end
-
     def login
       response = @connection.run_request(:post, 'auth', { 'auth' => { 'username' => @config['username'], 'password' => @config['password'] } }, {})
       if response.body['response']['error_code']
@@ -66,7 +62,7 @@ module AppnexusApi
       rate_limit_sleep = Proc.new do |exception, try, elapsed_time, next_interval|
         seconds = /Retry after \d+s/.match(exception.message)[1] || RATE_EXCEEDED_DEFAULT_TIMEOUT
         @logger.info("Sleeping for #{seconds}s...")
-        sleep seconds
+        sleep(seconds)
       end
 
       Retriable.retriable(on: Unauthorized, on_retry: Proc.new { logout }) do
@@ -85,6 +81,12 @@ module AppnexusApi
       end
 
       response
+    end
+
+    private
+
+    def is_authorized?
+      !@token.nil?
     end
   end
 end

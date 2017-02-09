@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe AppnexusApi::Connection do
+  let(:connection_with_null_logger) { AppnexusApi::Connection.new(connection_params) }
+
   subject do
-    connection = AppnexusApi::Connection.new({})
+    connection = described_class.new({})
     connection.logger.level = Logger::FATAL
     connection
   end
-  let(:connection_with_null_logger) { AppnexusApi::Connection.new(connection_params) }
 
   it 'allows no logger to be specified' do
     expect { AppnexusApi::CreativeService.new(connection_with_null_logger) }.to_not raise_error
@@ -23,4 +24,6 @@ describe AppnexusApi::Connection do
     end
     expect(subject.run_request(:get, 'http://localhost', nil, {})).not_to eq({})
   end
+
+  it 'correctly retries rate limit exceeded errors'
 end
