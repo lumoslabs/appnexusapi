@@ -25,11 +25,16 @@ module AppnexusApi
           when 503
             raise AppnexusApi::ServiceUnavailable, error_message(response)
           end
+
+          return if response.body.empty?
+          if response.body.fetch('response', {})['error_code'] == RATE_EXCEEDED_ERROR
+            raise AppnexusApi::RateLimitExceeded, "Retry after #{response.headers['retry-after']}"
+          end
         end
 
         def error_message(response)
           msg = "#{response[:method].to_s.upcase} #{response[:url].to_s}: #{response[:status]}"
-          if errors = response[:body] && response[:body]["errors"]
+          if (errors = response[:body]) && response[:body]['errors']
             msg << "\n"
             msg << errors.join("\n")
           end

@@ -7,17 +7,13 @@ class AppnexusApi::Service
 
   def name
     @name ||= begin
-      str = self.class.name.split("::").last.gsub("Service", "")
+      str = self.class.name.split('::').last.sub(/Service\z/, '')
       str.gsub(/(.)([A-Z])/, '\1_\2').downcase
     end
   end
 
   def plural_name
     name + 's'
-  end
-
-  def resource_class
-    self.class.resource_class
   end
 
   def uri_name
@@ -107,10 +103,6 @@ class AppnexusApi::Service
     end
   end
 
-  def resource_name(response)
-    [plural_name, plural_uri_name, name, uri_name].detect { |n| response.key?(n) }
-  end
-
   # For each service, define a corresponding Resource class that extends AppnexusApi::Resource
   def self.resource_class
     @resource_class ||= begin
@@ -120,5 +112,15 @@ class AppnexusApi::Service
       end
       AppnexusApi.const_get(resource_klass_name)
     end
+  end
+
+  private
+
+  def resource_class
+    self.class.resource_class
+  end
+
+  def resource_name(response)
+    [plural_name, plural_uri_name, name, uri_name].detect { |n| response.key?(n) }
   end
 end
