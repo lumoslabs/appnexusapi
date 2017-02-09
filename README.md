@@ -24,7 +24,7 @@ Establish a connection:
 connection = AppnexusApi::Connection.new(
   'username' => 'username',
   'password' => 'password',
-  'logger'   => Logger.new(STDOUT) # defaults to a null logger if no value passed in.
+  'logger'   => Logger.new(STDOUT) # defaults to STDOUT
 
   # Defaults to connecting to https://api.appnexus.com/ but you can optionally pass a uri to
   # connect to another endpoint, e.g. the staging site could be
