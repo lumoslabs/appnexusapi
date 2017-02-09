@@ -20,56 +20,58 @@ Or install it yourself as:
 
 Establish a connection:
 
-    connection = AppnexusApi::Connection.new(
-      'username' => 'username',
-      'password' => 'password',
-      'logger'   => Logger.new(STDOUT) # defaults to a null logger if no value passed in.
+```ruby
+connection = AppnexusApi::Connection.new(
+  'username' => 'username',
+  'password' => 'password',
+  'logger'   => Logger.new(STDOUT) # defaults to a null logger if no value passed in.
 
-      # Defaults to connecting to https://api.appnexus.com/ but you can optionally pass a uri to
-      # connect to another endpoint, e.g. the staging site could be
-      # "uri" => 'http://api-test.appnexus.com',
-
-
-    )
+  # Defaults to connecting to https://api.appnexus.com/ but you can optionally pass a uri to
+  # connect to another endpoint, e.g. the staging site could be
+  # "uri" => 'http://api-test.appnexus.com',
+)
+```
 
 Use a Service:
 
-    member_service = AppnexusApi::MemberService.new(connection)
-    # get always returns an array of results
-    # and defaults "num_elements" to 100 and "start_element" to 0
-    # and returns an AppnexusApi::Resource object which is a wrapper around the JSON
-    member = member_service.get.first
+```ruby
+member_service = AppnexusApi::MemberService.new(connection)
+# get always returns an array of results
+# and defaults "num_elements" to 100 and "start_element" to 0
+# and returns an AppnexusApi::Resource object which is a wrapper around the JSON
+member = member_service.get.first
 
-    line_item_service = AppnexusApi::LineItemService.new(connection)
-    line_item = line_item_service.get.first
-    line_item = line_item_service.get({advertiser_id: 12345}).first
+line_item_service = AppnexusApi::LineItemService.new(connection)
+line_item = line_item_service.get.first
+line_item = line_item_service.get({advertiser_id: 12345}).first
 
-    # create a new object
-    url_params  = { advertiser_id: 12345 }
-    body_params = { name: "some line item", code: "line item code"}
+# create a new object
+url_params  = { advertiser_id: 12345 }
+body_params = { name: "some line item", code: "line item code"}
 
-    line_item = line_item_service.create(url_params, body_params)
-    line_item.state
+line_item = line_item_service.create(url_params, body_params)
+line_item.state
 
 
-    # update an object
-    update_params = { state: "inactive" }
-    json_result = line_item.update(url_params, update_params)
+# update an object
+update_params = { state: "inactive" }
+json_result = line_item.update(url_params, update_params)
 
-    # delete an object
-    line_item.delete(url_params)
+# delete an object
+line_item.delete(url_params)
 
-    # this raises an AppnexusApi::UnprocessableEntity, not a 404 as it should
-    line_item_service.get(line_item.id)
+# this raises an AppnexusApi::UnprocessableEntity, not a 404 as it should
+line_item_service.get(line_item.id)
 
-    new_creative = {
-      "content"   => "<iframe src='helloword.html'></iframe>",
-      "width" => "300",
-      "height" => "250",
-      "template"  =>{ "id" => 7 }
-    }
-    creative = creative_service.create(new_creative)
-    creative.update("campaign" => "Testing")
+new_creative = {
+  "content"   => "<iframe src='helloword.html'></iframe>",
+  "width" => "300",
+  "height" => "250",
+  "template"  =>{ "id" => 7 }
+}
+creative = creative_service.create(new_creative)
+creative.update("campaign" => "Testing")
+```
 
 ## Testing
 
