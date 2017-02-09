@@ -76,7 +76,7 @@ class AppnexusApi::Connection
         break if response.body.empty? # Log level data download service returns a body of ""
         break unless response.body.fetch('response', {})['error_code'] == RATE_EXCEEDED_ERROR
         wait_time = response.headers['retry-after'] || RATE_EXCEEDED_DEFAULT_TIMEOUT
-        log.info("received rate exceeded.  wait time: #{wait_time}s")
+        @logger.info("received rate exceeded.  wait time: #{wait_time}s")
         sleep wait_time.to_i
       end
     rescue AppnexusApi::Unauthorized
