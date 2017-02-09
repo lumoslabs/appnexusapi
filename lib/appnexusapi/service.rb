@@ -1,6 +1,14 @@
 class AppnexusApi::Service
   DEFAULT_NUMBER_OF_ELEMENTS = 100
 
+  def self.resource_class
+    @@resource_class ||= begin
+      resource_klass_name = self.class.name.split('::').last.sub(/Service\z/, 'Resource')
+      AppnexusApi.const_set(resource_klass_name, Class.new(AppnexusApi::Resource))
+      AppnexusApi.const_get(resource_klass_name)
+    end
+  end
+
   def initialize(connection)
     @connection = connection
   end
@@ -17,10 +25,7 @@ class AppnexusApi::Service
   end
 
   def resource_class
-    @resource_class ||= begin
-      resource_name = name.capitalize.gsub(/(_(.))/) { |c| $2.upcase }
-      AppnexusApi.const_get(resource_name + "Resource")
-    end
+    self.class.resource_class
   end
 
   def uri_name
@@ -63,6 +68,7 @@ class AppnexusApi::Service
 
   def create(route_params={}, body={})
     raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
+
     body = { uri_name => body }
     route = @connection.build_url(uri_suffix, route_params)
     response = @connection.post(route, body).body['response']
@@ -75,6 +81,7 @@ class AppnexusApi::Service
 
   def update(id, route_params={}, body={})
     raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
+
     body = { uri_name => body }
     route = @connection.build_url(uri_suffix, route_params.merge("id" => id))
     response = @connection.put(route, body).body['response']
@@ -87,6 +94,7 @@ class AppnexusApi::Service
 
   def delete(id, route_params)
     raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
+
     route = @connection.build_url(uri_suffix, route_params.merge("id" => id))
     response = @connection.delete(route).body['response']
     if response['error_id']
@@ -110,5 +118,4 @@ class AppnexusApi::Service
   def resource_name(response)
     [plural_name, plural_uri_name, name, uri_name].detect { |n| response.key?(n) }
   end
-
 end
