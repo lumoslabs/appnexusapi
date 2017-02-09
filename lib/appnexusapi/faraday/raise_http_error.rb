@@ -2,6 +2,10 @@ module AppnexusApi
   module Faraday
     module Response
       class RaiseHttpError < ::Faraday::Response::Middleware
+        # Inexplicably, sandbox uses the correct code of 429, while production uses 405? so
+        # we just rely on the error message
+        RATE_EXCEEDED_ERROR = 'RATE_EXCEEDED'.freeze
+
         def on_complete(response)
           case response[:status].to_i
           when 400
@@ -27,8 +31,8 @@ module AppnexusApi
           end
 
           return if response.body.empty?
-          if response.body.fetch('response', {})['error_code'] == RATE_EXCEEDED_ERROR
-            raise AppnexusApi::RateLimitExceeded, "Retry after #{response.headers['retry-after']}"
+          if JSON.parse(response.body).fetch('response', {})['error_code'] == RATE_EXCEEDED_ERROR
+            raise AppnexusApi::RateLimitExceeded, "Retry after #{response.headers['retry-after']}s"
           end
         end
 

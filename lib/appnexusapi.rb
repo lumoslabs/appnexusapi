@@ -1,4 +1,5 @@
 require "faraday"
+require 'retriable'
 require "appnexusapi/version"
 require "appnexusapi/error"
 
