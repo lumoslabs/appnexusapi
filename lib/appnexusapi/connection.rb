@@ -3,8 +3,14 @@ require 'faraday_middleware'
 require 'appnexusapi/faraday/raise_http_error'
 
 module AppnexusApi
-  class Connection
+  class AppnexusApi::Connection
     RATE_EXCEEDED_DEFAULT_TIMEOUT = 15
+
+    RATE_LIMIT_WAITER = Proc.new do |exception, try, elapsed_time, next_interval|
+      seconds = /Retry after \d+s/.match(exception.message)[1] || RATE_EXCEEDED_DEFAULT_TIMEOUT
+      @logger.info("Sleeping for #{seconds}s...")
+      sleep(seconds)
+    end
 
     attr_reader :connection, :logger
 
@@ -59,14 +65,8 @@ module AppnexusApi
       login unless is_authorized?
       response = {}
 
-      rate_limit_sleep = Proc.new do |exception, try, elapsed_time, next_interval|
-        seconds = /Retry after \d+s/.match(exception.message)[1] || RATE_EXCEEDED_DEFAULT_TIMEOUT
-        @logger.info("Sleeping for #{seconds}s...")
-        sleep(seconds)
-      end
-
       Retriable.retriable(on: Unauthorized, on_retry: Proc.new { logout }) do
-        Retriable.retriable(on: RateLimitExceeded, on_retry: rate_limit_sleep) do
+        Retriable.retriable(on: RateLimitExceeded, on_retry: RATE_LIMIT_WAITER) do
           begin
             response = @connection.run_request(
               method,
