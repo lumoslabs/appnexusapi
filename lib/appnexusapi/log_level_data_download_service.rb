@@ -1,6 +1,14 @@
 class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::Service
-  class BadChecksumException < Exception
-  end
+  RETRY_DOWNLOAD_PARAMS = {
+    base_interval: 30,
+    tries: 20,
+    max_elapsed_time: 3600,
+    on_retry: Proc.new do |exception, tries|
+      connection.logger.warn("Retrying after #{exception.class}: #{tries} attempts.")
+    end
+  }.freeze
+
+  class BadChecksumException < StandardError; end
 
   def initialize(connection, options = {})
     @read_only = true
@@ -15,11 +23,29 @@ class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::Service
   # Parameter is a LogLevelDataResource
   # Downloads a gzipped file
   # Returns an array of paths to downloaded files
-  def download_resource(data_resource)
-    data_resource.download_params.map do |params|
-      uri = URI.parse(download_location(params.reject { |k,v| k == :checksum }))
+  def download_resource(siphon)
+    fail 'Missing necessary information!' unless siphon.name && siphon.hour && siphon.timestamp && siphon.splits
+
+    download_params = siphon.splits.map do |split_part|
+      # In the case of regenerated files, there should be no checksum.
+      # These replaced hourly files should not be downloaded.
+      next nil if split_part['checksum'].blank?
+
+      {
+        split_part: split_part['part'],
+        siphon_name: name,
+        timestamp: timestamp,
+        hour: hour,
+        checksum: split_part['checksum']
+      }
+    end.compact
+
+
+    download_params.map do |params|
+      uri = URI.parse(download_location(params.reject { |k, v| k == :checksum }))
       filename = File.join(@downloaded_files_path, "#{params[:siphon_name]}_#{params[:hour]}_#{params[:split_part]}.gz")
-      Pester.retry_with_exponential_backoff do
+
+      Retriable.retriable(RETRY_DOWNLOAD_PARAMS) do
         download_file(uri, filename)
         calculated_checksum = Digest::MD5.hexdigest(File.read(filename))
         if calculated_checksum != params[:checksum]

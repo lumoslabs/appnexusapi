@@ -9,10 +9,6 @@ class AppnexusApi::BidderProfileService < AppnexusApi::Service
     "profile"
   end
 
-  def resource_class
-    AppnexusApi::BidderProfileResource
-  end
-
   def uri_suffix
     "profile/#{@bidder_id}"
   end
@@ -20,5 +16,4 @@ class AppnexusApi::BidderProfileService < AppnexusApi::Service
   def delete(id)
     raise AppnexusApi::NotImplemented
   end
-
 end

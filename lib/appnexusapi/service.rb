@@ -16,13 +16,6 @@ class AppnexusApi::Service
     name + 's'
   end
 
-  def resource_class
-    @resource_class ||= begin
-      resource_name = name.capitalize.gsub(/(_(.))/) { |c| $2.upcase }
-      AppnexusApi.const_get(resource_name + "Resource")
-    end
-  end
-
   def uri_name
     name.gsub('_', '-')
   end
@@ -63,6 +56,7 @@ class AppnexusApi::Service
 
   def create(route_params={}, body={})
     raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
+
     body = { uri_name => body }
     route = @connection.build_url(uri_suffix, route_params)
     response = @connection.post(route, body).body['response']
@@ -75,6 +69,7 @@ class AppnexusApi::Service
 
   def update(id, route_params={}, body={})
     raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
+
     body = { uri_name => body }
     route = @connection.build_url(uri_suffix, route_params.merge("id" => id))
     response = @connection.put(route, body).body['response']
@@ -87,6 +82,7 @@ class AppnexusApi::Service
 
   def delete(id, route_params)
     raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
+
     route = @connection.build_url(uri_suffix, route_params.merge("id" => id))
     response = @connection.delete(route).body['response']
     if response['error_id']
@@ -100,15 +96,14 @@ class AppnexusApi::Service
     case key = resource_name(response)
     when plural_name, plural_uri_name
       response[key].map do |json|
-        resource_class.new(json, self, response['dbg'])
+        AppnexusApi::Resource.new(json, self, response['dbg'])
       end
     when name, uri_name
-      [resource_class.new(response[key], self, response['dbg'])]
+      [AppnexusApi::Resource.new(response[key], self, response['dbg'])]
     end
   end
 
   def resource_name(response)
     [plural_name, plural_uri_name, name, uri_name].detect { |n| response.key?(n) }
   end
-
 end

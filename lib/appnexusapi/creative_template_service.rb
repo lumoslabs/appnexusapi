@@ -3,10 +3,6 @@ class AppnexusApi::CreativeTemplateService < AppnexusApi::Service
     "template"
   end
 
-  def resource_class
-    AppnexusApi::CreativeTemplateResource
-  end
-
   def uri_suffix
     "template"
   end
@@ -14,5 +10,4 @@ class AppnexusApi::CreativeTemplateService < AppnexusApi::Service
   def delete(id)
     raise AppnexusApi::NotImplemented
   end
-
 end

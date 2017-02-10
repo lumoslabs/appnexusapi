@@ -1,7 +1,12 @@
 require 'spec_helper'
 
 describe AppnexusApi::Connection do
-  subject { AppnexusApi::Connection.new({}) }
+  subject do
+    connection = AppnexusApi::Connection.new({})
+    connection.logger.level = Logger::FATAL
+    connection
+  end
+  let(:connection_with_null_logger) { AppnexusApi::Connection.new(connection_params) }
 
   it 'allows no logger to be specified' do
     expect { AppnexusApi::CreativeService.new(connection_with_null_logger) }.to_not raise_error
