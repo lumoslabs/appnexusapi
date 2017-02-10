@@ -1,5 +1,3 @@
-require 'faraday'
-require 'faraday_middleware'
 require 'appnexusapi/faraday/raise_http_error'
 
 module AppnexusApi
@@ -17,9 +15,9 @@ module AppnexusApi
     def initialize(config)
       @config = config
       @config['uri'] ||= 'https://api.appnexus.com/'
-      @logger = @config['logger'] || Logger.new(STDOUT)
+      @logger = @config['logger'] || Logger.new(STDOUT).tap { |l| l.level = Logger::INFO }
       @connection = ::Faraday.new(@config['uri']) do |conn|
-        conn.response :logger, @logger, bodies: true
+        conn.response :logger, @logger, bodies: true if ENV['APPNEXUS_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i
         conn.request :json
         conn.response :json, :content_type => /\bjson$/
         conn.use AppnexusApi::Faraday::Response::RaiseHttpError
@@ -76,8 +74,8 @@ module AppnexusApi
               body,
               { 'Authorization' => @token }.merge(headers)
             )
-          rescue ::Faraday::Error::TimeoutError
-            raise AppnexusApi::Timeout, 'Timeout'
+          rescue ::Faraday::Error::TimeoutError => e
+            raise Timeout, e.message, e.message, e.backtrace
           end
         end
       end

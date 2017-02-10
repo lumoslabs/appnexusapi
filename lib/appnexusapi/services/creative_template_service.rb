@@ -4,7 +4,7 @@ class AppnexusApi::CreativeTemplateService < AppnexusApi::Service
   end
 
   def uri_suffix
-    "template"
+    name
   end
 
   def delete(id)

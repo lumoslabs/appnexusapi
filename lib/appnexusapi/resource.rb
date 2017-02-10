@@ -32,8 +32,11 @@ class AppnexusApi::Resource
     end
   end
 
+  def respond_to_missing?(method_name, include_private = false)
+    @json.respond_to?(method_name) || @json.has_key?(method_name.to_s) || super
+  end
+
   def to_s
     @json.inspect
   end
-
 end
