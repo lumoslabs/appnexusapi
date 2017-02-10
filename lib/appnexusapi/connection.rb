@@ -28,16 +28,18 @@ module AppnexusApi
     end
 
     def login
-      response = @connection.run_request(:post, 'auth', { 'auth' => { 'username' => @config['username'], 'password' => @config['password'] } }, {})
+      response = @connection.run_request(
+        :post,
+        'auth',
+        { 'auth' => { 'username' => @config['username'], 'password' => @config['password'] } },
+        {}
+      )
+
       if response.body['response']['error_code']
         fail "#{response.body['response']['error_code']}/#{response.body['response']['error_description']}"
       end
 
       @token = response.body['response']['token']
-    end
-
-    def logout
-      @token = nil
     end
 
     def get(route, params={}, headers={})
@@ -87,6 +89,10 @@ module AppnexusApi
 
     def is_authorized?
       !@token.nil?
+    end
+
+    def logout
+      @token = nil
     end
   end
 end
