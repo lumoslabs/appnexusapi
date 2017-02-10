@@ -85,6 +85,13 @@ This library uses [VCR](https://github.com/vcr/vcr) and Webmock to record API ca
 
 To update a spec, simply remove the relevant file from [spec/fixtures/vcr](spec/fixtures/vcr) (and setup the username/password as above) before launching `rspec`; the changes will be recorded automatically by VCR.
 
+## Debugging
+
+To trigger full Faraday request/respone logging, set the `APPNEXUS_API_DEBUG` environment variable before launching
+your application
+```
+export APPNEXUS_API_DEBUG=true
+```
 
 ## Contributing
 

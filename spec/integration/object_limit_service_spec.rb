@@ -5,7 +5,7 @@ describe AppnexusApi::ObjectLimitService do
 
   it "returns info about your current creative limits" do
     VCR.use_cassette('object_limit_info') do
-      creative_limits = object_limit_service.creative_limits.raw_json
+      creative_limits = object_limit_service.creative_limits.json
       expect(creative_limits["object_type"]).to eq "creative"
       expect(creative_limits["limit"].to_i).to be > 0
     end
@@ -13,14 +13,14 @@ describe AppnexusApi::ObjectLimitService do
 
   it "returns info about your current profile limits" do
     VCR.use_cassette('profile_limits') do
-      profile_limits = object_limit_service.profile_limits.raw_json
+      profile_limits = object_limit_service.profile_limits.json
       expect(profile_limits["object_type"]).to eq "profile"
     end
   end
 
   it "returns info about your current domain list limits" do
     VCR.use_cassette('domain_list_limits') do
-      domain_list_limits = object_limit_service.domain_list_limits.raw_json
+      domain_list_limits = object_limit_service.domain_list_limits.json
       expect(domain_list_limits["object_type"]).to eq "domain_list"
     end
   end

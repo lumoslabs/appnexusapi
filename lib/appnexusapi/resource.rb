@@ -1,6 +1,6 @@
 class AppnexusApi::Resource
 
-  attr_reader :dbg_info
+  attr_reader :dbg_info, :json
 
   def initialize(json, service, dbg_info = nil)
     @json = json
@@ -10,16 +10,12 @@ class AppnexusApi::Resource
 
   def update(route_params={}, body_params={})
     resource = @service.update(id, route_params, body_params)
-    @json = resource.raw_json
+    @json = resource.json
     self
   end
 
   def delete(route_params={})
     @service.delete(id, route_params)
-  end
-
-  def raw_json
-    @json
   end
 
   def method_missing(sym, *args, &block)
@@ -32,8 +28,11 @@ class AppnexusApi::Resource
     end
   end
 
+  def respond_to_missing?(method_name, include_private = false)
+    @json.respond_to?(method_name) || @json.has_key?(method_name.to_s) || super
+  end
+
   def to_s
     @json.inspect
   end
-
 end

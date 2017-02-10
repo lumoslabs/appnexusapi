@@ -28,20 +28,16 @@ class AppnexusApi::Service
     uri_name
   end
 
-  def get(params={})
-    return_response = params.delete(:return_response) || false
+  def get(params = {})
     params = {
       "num_elements" => DEFAULT_NUMBER_OF_ELEMENTS,
       "start_element" => 0
     }.merge(params)
-    response = @connection.get(uri_suffix, params).body['response']
-    if return_response
-      response
-    else
-      parse_response(response)
-    end
+
+    parse_response(@connection.get(uri_suffix, params).body['response'])
   end
 
+  # Page through all available elements automatically
   def get_all(params = {})
     responses = []
     last_responses = get(params)
@@ -91,6 +87,8 @@ class AppnexusApi::Service
     end
     response
   end
+
+  private
 
   def parse_response(response)
     case key = resource_name(response)
