@@ -7,7 +7,7 @@ class AppnexusApi::Service
 
   def name
     @name ||= begin
-      str = self.class.name.split("::").last.gsub("Service", "")
+      str = self.class.name.split('::').last.sub(/Service\z/, '')
       str.gsub(/(.)([A-Z])/, '\1_\2').downcase
     end
   end

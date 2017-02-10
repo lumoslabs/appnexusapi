@@ -1,4 +1,4 @@
-class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::Service
+class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::ReadOnlyService
   RETRY_DOWNLOAD_PARAMS = {
     base_interval: 30,
     tries: 20,
@@ -11,7 +11,6 @@ class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::Service
   class BadChecksumException < StandardError; end
 
   def initialize(connection, options = {})
-    @read_only = true
     @downloaded_files_path = options[:downloaded_files_path] || '.'
     super(connection)
   end
