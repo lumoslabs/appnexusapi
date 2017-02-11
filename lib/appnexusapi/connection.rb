@@ -6,7 +6,8 @@ module AppnexusApi
 
     RATE_LIMIT_WAITER = Proc.new do |exception, try, elapsed_time, next_interval|
       seconds = /Retry after \d+s/.match(exception.message)[1] || RATE_EXCEEDED_DEFAULT_TIMEOUT
-      @logger.info("Sleeping for #{seconds}s...")
+      seconds += 15 # Just to be sure
+      puts "Retrying after sleeping for #{seconds}s..."
       sleep(seconds)
     end
 
@@ -15,9 +16,10 @@ module AppnexusApi
     def initialize(config)
       @config = config
       @config['uri'] ||= 'https://api.appnexus.com/'
-      @logger = @config['logger'] || Logger.new(STDOUT).tap { |l| l.level = Logger::INFO }
+      @api_debug = ENV['APPNEXUS_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i
+      @logger = @config['logger'] || Logger.new(STDOUT).tap { |l| @api_debug ? l.level = Logger::DEBUG : l.level = Logger::INFO }
       @connection = ::Faraday.new(@config['uri']) do |conn|
-        conn.response :logger, @logger, bodies: true if ENV['APPNEXUS_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i
+        conn.response :logger, @logger, bodies: true if @api_debug
         conn.request :json
         conn.response :json, :content_type => /\bjson$/
         conn.use AppnexusApi::Faraday::Response::RaiseHttpError
@@ -66,7 +68,7 @@ module AppnexusApi
       response = {}
 
       Retriable.retriable(on: Unauthorized, on_retry: Proc.new { logout }) do
-        Retriable.retriable(on: RateLimitExceeded, on_retry: RATE_LIMIT_WAITER) do
+        Retriable.retriable(on: RateLimitExceeded, on_retry: RATE_LIMIT_WAITER, tries: 10) do
           begin
             response = @connection.run_request(
               method,
