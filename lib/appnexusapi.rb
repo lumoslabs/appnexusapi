@@ -2,22 +2,16 @@ require 'faraday'
 require 'faraday_middleware'
 require 'retriable'
 
-require "appnexusapi/version"
-require "appnexusapi/error"
+require 'appnexusapi/version'
+require 'appnexusapi/error'
 require 'appnexusapi/resource'
 require 'appnexusapi/service'
 require 'appnexusapi/read_only_service'
+require 'appnexusapi/connection'
+
+Dir.glob("#{File.join(File.dirname(__FILE__), 'appnexusapi', 'services')}/*.rb").each do |service_file|
+  require service_file
+end
 
 module AppnexusApi
-  autoload :Connection, "appnexusapi/connection"
-
-  dir = File.join(File.dirname(__FILE__), 'appnexusapi')
-  files = Dir.glob(File.expand_path("{*resource,*service}.rb", dir)).map { |f| File.join(dir, File.basename(f, '.rb')) }
-
-  service_dir = File.join(dir, 'services')
-  files += Dir.glob(File.expand_path("*service.rb", service_dir)).map { |f| File.join(service_dir, File.basename(f, '.rb')) }
-
-  files.each do |file|
-    require file
-  end
 end
