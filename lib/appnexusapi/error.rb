@@ -12,5 +12,5 @@ module AppnexusApi
   class ServiceUnavailable < Error; end
   class InvalidJson < Error; end
   class Timeout < Error; end
-  class RateLimitExceeded < StandardError; end
+  class RateLimitExceeded < Error; end
 end

@@ -1,7 +1,7 @@
 require 'appnexusapi/faraday/raise_http_error'
 
 module AppnexusApi
-  class AppnexusApi::Connection
+  class Connection
     RATE_EXCEEDED_DEFAULT_TIMEOUT = 15
 
     RATE_LIMIT_WAITER = Proc.new do |exception, try, elapsed_time, next_interval|
@@ -65,6 +65,8 @@ module AppnexusApi
       run_request(:delete, route, body, headers)
     end
 
+    private
+
     def run_request(method, route, body, headers)
       login unless is_authorized?
       response = {}
@@ -86,8 +88,6 @@ module AppnexusApi
 
       response
     end
-
-    private
 
     def is_authorized?
       !@token.nil?
