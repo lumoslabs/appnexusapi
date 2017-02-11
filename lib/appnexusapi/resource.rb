@@ -8,13 +8,12 @@ class AppnexusApi::Resource
     @dbg_info = dbg_info
   end
 
-  def update(route_params={}, body_params={})
-    resource = @service.update(id, route_params, body_params)
-    @raw_json = resource.raw_json
+  def update(route_params = {}, body_params = {})
+    @raw_json = @service.update(id, route_params, body_params).raw_json
     self
   end
 
-  def delete(route_params={})
+  def delete(route_params = {})
     @service.delete(id, route_params)
   end
 

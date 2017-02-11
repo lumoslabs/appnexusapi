@@ -6,8 +6,8 @@ module AppnexusApi
 
     RATE_LIMIT_WAITER = Proc.new do |exception, try, elapsed_time, next_interval|
       seconds = /Retry after \d+s/.match(exception.message)[1] || RATE_EXCEEDED_DEFAULT_TIMEOUT
-      seconds += 15 # Just to be sure
-      puts "Retrying after sleeping for #{seconds}s..."
+      seconds += RATE_EXCEEDED_DEFAULT_TIMEOUT # Just to be sure we waited long enough
+      puts "WARN: Rate limit exceeded; retrying after sleeping for #{seconds}s..."
       sleep(seconds)
     end
 
@@ -17,7 +17,9 @@ module AppnexusApi
       @config = config
       @config['uri'] ||= 'https://api.appnexus.com/'
       @api_debug = ENV['APPNEXUS_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i
-      @logger = @config['logger'] || Logger.new(STDOUT).tap { |l| @api_debug ? l.level = Logger::DEBUG : l.level = Logger::INFO }
+      @logger = @config['logger'] || Logger.new(STDOUT).tap do |logger|
+        @api_debug ? logger.level = Logger::DEBUG : logger.level = Logger::INFO
+      end
       @connection = ::Faraday.new(@config['uri']) do |conn|
         conn.response :logger, @logger, bodies: true if @api_debug
         conn.request :json
