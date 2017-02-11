@@ -1,5 +1,4 @@
 class AppnexusApi::ContentCategoryService < AppnexusApi::Service
-
   def initialize(connection)
     super(connection)
   end

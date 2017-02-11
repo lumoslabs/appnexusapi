@@ -1,5 +1,4 @@
 class AppnexusApi::BidderProfileService < AppnexusApi::Service
-
   def initialize(connection, bidder_id)
     @bidder_id = bidder_id
     super(connection)

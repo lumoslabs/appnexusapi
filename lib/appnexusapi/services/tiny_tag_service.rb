@@ -1,5 +1,4 @@
 class AppnexusApi::TinyTagService < AppnexusApi::Service
-
   def initialize(connection, member_id)
     @member_id = member_id
     super(connection)

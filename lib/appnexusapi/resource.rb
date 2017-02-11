@@ -20,7 +20,7 @@ class AppnexusApi::Resource
   def method_missing(sym, *args, &block)
     if @raw_json.respond_to?(sym)
       @raw_json.send(sym, *args, &block)
-    elsif @raw_json.has_key?(sym.to_s)
+    elsif @raw_json.key?(sym.to_s)
       return @raw_json[sym.to_s]
     else
       super(sym, *args, &block)
@@ -28,7 +28,7 @@ class AppnexusApi::Resource
   end
 
   def respond_to_missing?(method_name, include_private = false)
-    @raw_json.respond_to?(method_name) || @raw_json.has_key?(method_name.to_s) || super
+    @raw_json.respond_to?(method_name) || @raw_json.key?(method_name.to_s) || super
   end
 
   def to_s
