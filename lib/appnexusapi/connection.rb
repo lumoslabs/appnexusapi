@@ -70,7 +70,7 @@ module AppnexusApi
       response = {}
 
       Retriable.retriable(on: Unauthorized, on_retry: Proc.new { logout }) do
-        Retriable.retriable(on: RateLimitExceeded, on_retry: RATE_LIMIT_WAITER, tries: 10) do
+        Retriable.retriable(on: RateLimitExceeded, on_retry: RATE_LIMIT_WAITER) do
           begin
             response = @connection.run_request(
               method,
