@@ -29,11 +29,10 @@ module AppnexusApi
           when 503
             raise AppnexusApi::ServiceUnavailable, error_message(response)
           end
-          puts "before"
+
           return if response.body.empty?
-          puts "response body: #{JSON.parse(response.body).fetch('response', {})}"
+
           if JSON.parse(response.body).fetch('response', {})['error_code'] == RATE_EXCEEDED_ERROR
-            puts "Matched error!"
             raise AppnexusApi::RateLimitExceeded, "Retry after #{response.response_headers['retry-after']}s"
           end
         end

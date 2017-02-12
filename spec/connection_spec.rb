@@ -32,21 +32,25 @@ describe AppnexusApi::Connection do
     context 'rate limited errors' do
       let(:response) do
         Faraday::Response.new(
-          body: { 'error_code' => described_class::RATE_EXCEEDED_DEFAULT_TIMEOUT },
+          status: 405,
+          body: { 'error_code' => AppnexusApi::Faraday::Response::RaiseHttpError::RATE_EXCEEDED_ERROR },
           response_headers: { 'retry-after' => 15 }
         )
       end
 
+      before do
+        described_class.const_set('RATE_EXCEEDED_DEFAULT_TIMEOUT', 0)
+      end
+
       it 'retries 3 times' do
-        counter = 0
         expect(subject).to receive(:login)
-        expect(subject.connection).to receive(:run_request).twice do |arg|
-          puts response.pretty_inspect
-          counter += 1
-          counter <= 2 ? response : Faraday::Response.new(body: reponse_data)
+
+        counter = 0
+        expect(subject.connection).to receive(:run_request).exactly(3).times do |arg|
+          raise AppnexusApi::RateLimitExceeded, 'Retry after 1s'
         end
-        puts "counter is #{counter}"
-        expect(subject.get('http://localhost', {}, {}).body).to eq(reponse_data)
+
+        expect { subject.get('http://localhost', {}, {}).body }.to raise_error(AppnexusApi::RateLimitExceeded)
       end
     end
   end
