@@ -31,9 +31,9 @@ class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::ReadOnlyService
 
       {
         split_part: split_part['part'],
-        siphon_name: name,
-        timestamp: timestamp,
-        hour: hour,
+        siphon_name: siphon.name,
+        timestamp: siphon.timestamp,
+        hour: siphon.hour,
         checksum: split_part['checksum']
       }
     end.compact
@@ -70,6 +70,7 @@ class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::ReadOnlyService
     puts "Starting HTTP download for: #{uri.to_s}..."
     http_object = Net::HTTP.new(uri.host, uri.port)
     http_object.use_ssl = true if uri.scheme == 'https'
+
     begin
       http_object.start do |http|
         request = Net::HTTP::Get.new(uri.request_uri)
