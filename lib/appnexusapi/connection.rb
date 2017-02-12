@@ -5,7 +5,11 @@ module AppnexusApi
     RATE_EXCEEDED_DEFAULT_TIMEOUT = 15
 
     RATE_LIMIT_WAITER = Proc.new do |exception, try, elapsed_time, next_interval|
-      seconds = /Retry after \d+s/.match(exception.message)[1] || RATE_EXCEEDED_DEFAULT_TIMEOUT
+      if (match = /Retry after (\d+)s/.match(exception.message))
+        seconds = match[1].to_i
+      else
+        seconds = RATE_EXCEEDED_DEFAULT_TIMEOUT
+      end
       seconds += RATE_EXCEEDED_DEFAULT_TIMEOUT # Just to be sure we waited long enough
       puts "WARN: Rate limit exceeded; retrying after sleeping for #{seconds}s..."
       sleep(seconds)
