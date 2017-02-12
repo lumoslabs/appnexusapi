@@ -1,11 +1,15 @@
 require 'appnexusapi/faraday/raise_http_error'
 
 module AppnexusApi
-  class AppnexusApi::Connection
+  class Connection
     RATE_EXCEEDED_DEFAULT_TIMEOUT = 15
 
     RATE_LIMIT_WAITER = Proc.new do |exception, try, elapsed_time, next_interval|
-      seconds = /Retry after \d+s/.match(exception.message)[1] || RATE_EXCEEDED_DEFAULT_TIMEOUT
+      if (match = /Retry after (\d+)s/.match(exception.message))
+        seconds = match[1].to_i
+      else
+        seconds = RATE_EXCEEDED_DEFAULT_TIMEOUT
+      end
       seconds += RATE_EXCEEDED_DEFAULT_TIMEOUT # Just to be sure we waited long enough
       puts "WARN: Rate limit exceeded; retrying after sleeping for #{seconds}s..."
       sleep(seconds)
@@ -65,6 +69,8 @@ module AppnexusApi
       run_request(:delete, route, body, headers)
     end
 
+    private
+
     def run_request(method, route, body, headers)
       login unless is_authorized?
       response = {}
@@ -86,8 +92,6 @@ module AppnexusApi
 
       response
     end
-
-    private
 
     def is_authorized?
       !@token.nil?
