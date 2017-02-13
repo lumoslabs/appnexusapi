@@ -15,10 +15,6 @@ class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::ReadOnlyService
     super(connection)
   end
 
-  def download_location(params = {})
-    @connection.get(uri_suffix, params).headers['location']
-  end
-
   # Parameter is a LogLevelDataResource FKA a "Siphon"
   # Downloads a gzipped file
   # Returns an array of paths to downloaded files
@@ -39,7 +35,7 @@ class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::ReadOnlyService
     end.compact
 
     download_params.map do |params|
-      uri = URI.parse(download_location(params.reject { |k, v| k == :checksum }))
+      uri = @connection.get(uri_suffix, params.reject { |k, v| k == :checksum }).headers['location']
       filename = File.join(@downloaded_files_path, "#{params[:siphon_name]}_#{params[:hour]}_#{params[:split_part]}.gz")
 
       Retriable.retriable(RETRY_DOWNLOAD_PARAMS) do
@@ -57,7 +53,7 @@ class AppnexusApi::LogLevelDataDownloadService < AppnexusApi::ReadOnlyService
   end
 
   def get
-    fail(AppnexusApi::NotImplemented, 'This service is designed to work via the download_location method.')
+    raise AppnexusApi::NotImplemented, 'This service is designed to work via the download_resource method.'
   end
 
   def uri_name
