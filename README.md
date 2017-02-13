@@ -18,6 +18,13 @@ Or install it yourself as:
 
 ## Usage
 
+#### Configure defaults
+```ruby
+AppnexusApi.configure do |config|
+  config.logger = Logger.new('/path/to/log.log')
+end
+```
+
 #### Establish a connection:
 
 ```ruby
@@ -75,15 +82,17 @@ creative.update("campaign" => "Testing")
 
 #### Downloading Log Level Data:
 
-Downloading the log level data feed is a little different:
-
 ```ruby
-data_service = AppnexusApi::LogLevelDataService.new(connection, siphon_name: 'standard_feed')
-download_service = AppnexusApi::LogLevelDataDownloadService.new(connection, downloaded_files_path: '/local/path')
+download_service = AppnexusApi::LogLevelDataService.new(
+  connection,
+  downloaded_files_path: '/example/local/path',
+  siphon_name: 'standard_feed'
+)
 
-data_service.since(since).map { |siphon| download_service.download_resource(siphon) }.flatten
+data_service.download_new_files_since('2016-02-01'.to_time).each do |siphon|
+  download_service.download_resource(siphon)
+end
 ```
-
 
 ## Testing
 

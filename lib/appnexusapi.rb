@@ -1,7 +1,9 @@
 require 'faraday'
 require 'faraday_middleware'
+require 'logger'
 require 'retriable'
 
+require 'appnexusapi/configuration'
 require 'appnexusapi/version'
 require 'appnexusapi/error'
 require 'appnexusapi/resource'
@@ -14,4 +16,11 @@ Dir.glob("#{File.join(File.dirname(__FILE__), 'appnexusapi', 'services')}/*.rb")
 end
 
 module AppnexusApi
+  def self.config
+    @configuration ||= Configuration.new
+  end
+
+  def self.configure
+    yield(config)
+  end
 end
