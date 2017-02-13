@@ -89,9 +89,7 @@ download_service = AppnexusApi::LogLevelDataService.new(
   siphon_name: 'standard_feed'
 )
 
-data_service.download_new_files_since('2016-02-01'.to_time).each do |siphon|
-  download_service.download_resource(siphon)
-end
+downloaded_files = data_service.download_new_files_since('2016-02-01'.to_time)
 ```
 
 ## Testing
