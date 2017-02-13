@@ -11,7 +11,7 @@ module AppnexusApi
         seconds = RATE_EXCEEDED_DEFAULT_TIMEOUT
       end
       seconds += RATE_EXCEEDED_DEFAULT_TIMEOUT # Just to be sure we waited long enough
-      puts "WARN: Rate limit exceeded; retrying after sleeping for #{seconds}s..."
+      AppnexusApi.config.logger.warn("WARN: Rate limit exceeded; retrying after #{seconds}s...")
       sleep(seconds)
     end
 
@@ -20,12 +20,9 @@ module AppnexusApi
     def initialize(config)
       @config = config
       @config['uri'] ||= 'https://api.appnexus.com/'
-      @api_debug = ENV['APPNEXUS_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i
-      @logger = @config['logger'] || Logger.new(STDOUT).tap do |logger|
-        @api_debug ? logger.level = Logger::DEBUG : logger.level = Logger::INFO
-      end
+      @logger = @config['logger'] || AppnexusApi.config.logger
       @connection = ::Faraday.new(@config['uri']) do |conn|
-        conn.response :logger, @logger, bodies: true if @api_debug
+        conn.response :logger, @logger, bodies: true if AppnexusApi.config.api_debug
         conn.request :json
         conn.response :json, :content_type => /\bjson$/
         conn.use AppnexusApi::Faraday::Response::RaiseHttpError

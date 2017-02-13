@@ -1,5 +1,7 @@
 module AppnexusApi
   class Error < StandardError; end
+
+  class BadChecksumException < Error; end
   class BadRequest < Error; end
   class Unauthorized < Error; end
   class Forbidden < Error; end
