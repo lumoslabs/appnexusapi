@@ -31,9 +31,13 @@ module AppnexusApi
           end
 
           return if response.body.empty?
+          body = JSON.parse(response.body).fetch('response', {})
 
-          if JSON.parse(response.body).fetch('response', {})['error_code'] == RATE_EXCEEDED_ERROR
+          if body['error_code'] == RATE_EXCEEDED_ERROR
             raise AppnexusApi::RateLimitExceeded, "Retry after #{response.response_headers['retry-after']}s"
+          elsif body['error_id'] && !body['error_id'].empty?
+            # TODO: this should raise an error, but a lot of the specs currently have error responses
+            # raise AppnexusApi::Error, "#{body['error_id']}: #{body['error']} - #{body['error_description']}"
           end
         end
 

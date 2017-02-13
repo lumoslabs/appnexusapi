@@ -1,9 +1,11 @@
 module AppnexusApi
   class LogLevelDataService < AppnexusApi::ReadOnlyService
+    DOWNLOAD_URI = 'siphon-download'.freeze
     RETRY_DOWNLOAD_PARAMS = {
       base_interval: 30,
       tries: 20,
       max_elapsed_time: 3600,
+      on: [AppnexusApi::Error],
       on_retry: Proc.new do |exception, tries|
         AppnexusApi.config.logger.warn("Retrying after #{exception.class}: #{tries} attempts.")
       end
@@ -16,15 +18,11 @@ module AppnexusApi
     end
 
     def download_new_files_since(time = nil)
-      since(time).each { |siphon| download_resource(siphon) }
+      since(time).map { |siphon| download_resource(siphon) }
     end
 
     def uri_name
       'siphon'
-    end
-
-    def uri_name
-      'siphon-download'
     end
 
     def since(time = nil)
@@ -63,7 +61,7 @@ module AppnexusApi
       end.compact
 
       download_params.map do |params|
-        uri = @connection.get(uri_suffix, params.reject { |k, v| k == :checksum }).headers['location']
+        uri = URI.parse(@connection.get(DOWNLOAD_URI, params.reject { |k, v| k == :checksum }).headers['location'])
         filename = File.join(@downloaded_files_path, "#{params[:siphon_name]}_#{params[:hour]}_#{params[:split_part]}.gz")
 
         Retriable.retriable(RETRY_DOWNLOAD_PARAMS) do
