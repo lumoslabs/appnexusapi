@@ -18,6 +18,13 @@ Or install it yourself as:
 
 ## Usage
 
+#### Configure defaults
+```ruby
+AppnexusApi.configure do |config|
+  config.logger = Logger.new('/path/to/log.log')
+end
+```
+
 #### Establish a connection:
 
 ```ruby

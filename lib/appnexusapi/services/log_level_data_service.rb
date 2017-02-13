@@ -1,11 +1,12 @@
 module AppnexusApi
   class LogLevelDataService < AppnexusApi::ReadOnlyService
+    DEFAULT_FEED = 'standard_feed'.freeze
     DOWNLOAD_URI = 'siphon-download'.freeze
     RETRY_DOWNLOAD_PARAMS = {
       base_interval: 30,
       tries: 20,
       max_elapsed_time: 3600,
-      on: [AppnexusApi::Error],
+      on: [AppnexusApi::Error, ::Faraday::Error::ClientError],
       on_retry: Proc.new do |exception, tries|
         AppnexusApi.config.logger.warn("Retrying after #{exception.class}: #{tries} attempts.")
       end
@@ -13,7 +14,7 @@ module AppnexusApi
 
     def initialize(connection, options = {})
       @downloaded_files_path = options[:downloaded_files_path] || '.'
-      @siphon_name = options[:siphon_name] || 'standard_feed'
+      @siphon_name = options[:siphon_name] || DEFAULT_FEED
       super(connection)
     end
 
@@ -49,7 +50,7 @@ module AppnexusApi
 
       download_params = siphon.splits.map do |split_part|
         # In the case of files that were later replaced, there should be no checksum and they shouldn't be downloaded
-        next nil if split_part['checksum'].blank?
+        next nil if split_part['checksum'].nil? || split_part['checksum'].empty?
 
         {
           split_part: split_part['part'],
