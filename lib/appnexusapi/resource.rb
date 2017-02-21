@@ -13,6 +13,12 @@ class AppnexusApi::Resource
     self
   end
 
+  # If you have modified the @raw_json hash in place, you can just do resource.save
+  def save
+    @service.update(id, {}, @raw_json).raw_json
+    self
+  end
+
   def delete(route_params = {})
     @service.delete(id, route_params)
   end
@@ -21,7 +27,7 @@ class AppnexusApi::Resource
     if @raw_json.respond_to?(sym)
       @raw_json.send(sym, *args, &block)
     elsif @raw_json.key?(sym.to_s)
-      return @raw_json[sym.to_s]
+      @raw_json[sym.to_s]
     else
       super(sym, *args, &block)
     end
