@@ -67,6 +67,10 @@ json_result = line_item.update(url_params, update_params)
 # delete an object
 line_item.delete(url_params)
 
+# save an object that you modified locally
+line_item.raw_json[:state] = 'active'
+line_item.save
+
 # this raises an AppnexusApi::UnprocessableEntity, not a 404 as it should
 line_item_service.get(line_item.id)
 
