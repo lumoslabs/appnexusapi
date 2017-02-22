@@ -1,4 +1,4 @@
-require_relative './log_level_data_service'
+require 'appnexusapi/services/log_level_data_service'
 
 # TODO: Remove this class in v2.0
 module AppnexusApi
