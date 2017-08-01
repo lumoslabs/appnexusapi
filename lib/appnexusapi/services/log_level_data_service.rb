@@ -88,6 +88,7 @@ module AppnexusApi
         http_object.start do |http|
           request = Net::HTTP::Get.new(uri.request_uri)
           http.read_timeout = 500
+
           http.request(request) do |response|
             open(filename, 'wb') do |io|
               response.read_body do |chunk|
