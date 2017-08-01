@@ -29,11 +29,7 @@ class AppnexusApi::Service
   end
 
   def get(params = {})
-    params = {
-      "num_elements" => DEFAULT_NUMBER_OF_ELEMENTS,
-      "start_element" => 0
-    }.merge(params)
-
+    params = { 'num_elements' => DEFAULT_NUMBER_OF_ELEMENTS, 'start_element' => 0 }.merge(params)
     parse_response(@connection.get(uri_suffix, params).body['response'])
   end
 
@@ -50,52 +46,50 @@ class AppnexusApi::Service
     responses
   end
 
-  def create(route_params={}, body={})
-    raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
-
-    body = { uri_name => body }
+  def create(route_params = {}, body = {})
+    check_read_only!
     route = @connection.build_url(uri_suffix, route_params)
-    response = @connection.post(route, body).body['response']
-    if response['error_id']
-      response.delete('dbg')
-      raise AppnexusApi::BadRequest.new(response.inspect)
-    end
+    response = @connection.post(route, { uri_name => body }).body['response']
+    validate_response!(response)
+
     parse_response(response).first
   end
 
-  def update(id, route_params={}, body={})
-    raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
+  def update(id, route_params = {}, body = {})
+    check_read_only!
+    route = @connection.build_url(uri_suffix, route_params.merge('id' => id))
+    response = @connection.put(route, { uri_name => body }).body['response']
+    validate_response!(response)
 
-    body = { uri_name => body }
-    route = @connection.build_url(uri_suffix, route_params.merge("id" => id))
-    response = @connection.put(route, body).body['response']
-    if response['error_id']
-      response.delete('dbg')
-      raise AppnexusApi::BadRequest.new(response.inspect)
-    end
     parse_response(response).first
   end
 
   def delete(id, route_params)
-    raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
-
-    route = @connection.build_url(uri_suffix, route_params.merge("id" => id))
+    check_read_only!
+    route = @connection.build_url(uri_suffix, route_params.merge('id' => id))
     response = @connection.delete(route).body['response']
-    if response['error_id']
-      response.delete('dbg')
-      raise AppnexusApi::BadRequest.new(response.inspect)
-    end
+    validate_response!(response)
+
     response
   end
 
   private
 
+  def check_read_only!
+    raise(AppnexusApi::NotImplemented, "Service is read-only.") if @read_only
+  end
+
+  def validate_response!(response)
+    return unless response['error_id']
+
+    response.delete('dbg')
+    raise AppnexusApi::BadRequest.new(response.inspect)
+  end
+
   def parse_response(response)
     case key = resource_name(response)
     when plural_name, plural_uri_name
-      response[key].map do |json|
-        AppnexusApi::Resource.new(json, self, response['dbg'])
-      end
+      response[key].map { |json| AppnexusApi::Resource.new(json, self, response['dbg']) }
     when name, uri_name
       [AppnexusApi::Resource.new(response[key], self, response['dbg'])]
     end
