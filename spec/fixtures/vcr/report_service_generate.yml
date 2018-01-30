@@ -1,0 +1,351 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api-test.appnexus.com/auth
+    body:
+      encoding: UTF-8
+      string: '{"auth":{"username":"<APPNEXUS_USERNAME>","password":"<APPNEXUS_PASSWORD>"}}'
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '262'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jan 2018 17:34:48 GMT
+      Set-Cookie:
+      - HBFAPI_SESSID=authn%3A171678%3Aa21bfc20a8cb3%3Anym2; Path=/
+      - IBAPI_SESSID=authn%3A171678%3Aa21bfc20a8cb3%3Anym2; Path=/
+      X-An-Requestid:
+      - 202f4122a45f87fa
+      X-Route:
+      - "/auth"
+      X-Route-Time:
+      - '507'
+    body:
+      encoding: UTF-8
+      string: '{"response":{"status":"OK","token":"authn:171678:a21bfc20a8cb3:nym2","dbg_info":{"instance":"01.authentication-api.test175158.nym2","time":505,"start_time":"2018-01-30T17:34:48.716Z","version":"1.2.0","trace_id":"202f4122a45f87fa","span_id":"202f4122a45f87fa"}}}'
+    http_version: 
+  recorded_at: Tue, 30 Jan 2018 17:34:47 GMT
+- request:
+    method: post
+    uri: https://api-test.appnexus.com/advertiser
+    body:
+      encoding: UTF-8
+      string: '{"advertiser":{"name":"rspec advertiser"}}'
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Authorization:
+      - authn:171678:a21bfc20a8cb3:nym2
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-store, no-cache, must-revalidate;no-cache
+      Content-Length:
+      - '1122'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jan 2018 17:34:49 GMT
+      Expires:
+      - Thu, 19 Nov 1981 08:52:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - Apache
+      Set-Cookie:
+      - HBFAPI_SESSID=authn%3A171678%3Aa21bfc20a8cb3%3Anym2; Path=/
+      - last_write[dwapi_serviceadvertiser_487]=1517333690%3A70ba77116599aa19bfd9ac6670b5f1d2d2cc89f0;
+        Expires=Tue, 30 Jan 2018 17:35:05 GMT; Path=/; Domain=envnxs.net; HTTPOnly
+      X-An-Requestid:
+      - 36865a9ed0925abe
+      X-Appnexus-Api-Version:
+      - 1.18.265
+      X-Count-Read:
+      - user:2,member:0,serviceHostUser:1,serviceHostMember:0,hostUser:2,hostMember:0,ip:0
+      X-Count-Write:
+      - user:1,member:0,serviceHostUser:1,serviceHostMember:0,hostUser:1,hostMember:0,ip:0
+      X-Pappy-Uid:
+      - 40c5f75e-2572-5f0e-9aa8-74e01d5c54a7
+      X-Rate-Limits:
+      - cru=2;crm=2;cwu=1;cwm=1;lru=1000;lrm=1000;lwu=1000;lwm=1000
+      X-Ratelimit-Read:
+      - '1000'
+      X-Ratelimit-Service:
+      - 1000-Default
+      X-Ratelimit-System:
+      - 1000-Default
+      X-Ratelimit-Write:
+      - '1000'
+      X-Route:
+      - "/advertiser"
+      X-Route-Time:
+      - '312'
+    body:
+      encoding: UTF-8
+      string: '{"response":{"status":"OK","count":1,"id":2301169,"start_element":0,"num_elements":100,"advertiser":{"id":2301169,"code":null,"name":"rspec
+        advertiser","state":"active","default_brand_id":null,"remarketing_segment_id":null,"profile_id":null,"control_pct":0,"timezone":"EST5EDT","last_modified":"2018-01-30
+        17:34:49","member_id":487,"billing_name":null,"billing_phone":null,"billing_address1":null,"billing_address2":null,"billing_city":null,"billing_state":null,"billing_country":null,"billing_zip":null,"default_currency":"USD","use_insertion_orders":true,"time_format":"12-hour","is_malicious":false,"is_mediated":false,"billing_internal_user":null,"default_category":null,"default_brand":null,"labels":null,"competitive_brands":null,"competitive_categories":null,"thirdparty_pixels":null,"macros":null,"lifetime_budget":null,"lifetime_budget_imps":null,"daily_budget":null,"daily_budget_imps":null,"enable_pacing":null,"allow_safety_pacing":null,"lifetime_pacing":null,"lifetime_pacing_span":null,"lifetime_pacing_pct":null},"dbg_info":{"slave_hit":false,"warnings":[],"version":"1.18.265","output_term":"advertiser"}}}'
+    http_version: 
+  recorded_at: Tue, 30 Jan 2018 17:34:48 GMT
+- request:
+    method: post
+    uri: https://api-test.appnexus.com/report?advertiser_id=2301169
+    body:
+      encoding: UTF-8
+      string: '{"report":{"format":"csv","timezone":"UTC","report_type":"advertiser_analytics","start_date":"2018-01-15
+        00:00:00","end_date":"2018-01-16 00:00:00","columns":["day","campaign_id","advertiser_currency","spend_adv_curr","clicks","imps"]}}'
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Authorization:
+      - authn:171678:a21bfc20a8cb3:nym2
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '542'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Tue, 30 Jan 2018 17:34:50 GMT
+      Server:
+      - Apache
+      Vary:
+      - Authorization
+      X-An-Requestid:
+      - cc0004343a31d229
+      X-Count-Read:
+      - user:2,member:0,serviceHostUser:0,serviceHostMember:0,hostUser:2,hostMember:0,ip:0
+      X-Count-Write:
+      - user:2,member:0,serviceHostUser:1,serviceHostMember:0,hostUser:2,hostMember:0,ip:0
+      X-Rate-Limits:
+      - cru=2;crm=2;cwu=2;cwm=2;lru=1000;lrm=1000;lwu=1000;lwm=1000
+      X-Ratelimit-Read:
+      - '1000'
+      X-Ratelimit-Service:
+      - 1000-Default
+      X-Ratelimit-System:
+      - 1000-Default
+      X-Ratelimit-Write:
+      - '1000'
+      X-Route:
+      - "/report"
+      X-Route-Time:
+      - '857'
+    body:
+      encoding: UTF-8
+      string: '{"response":{"report_id":"89543e08ce3ec7dccab3b5fb2e29f8a1","status":"OK","dbg_info":{"user::read_limit":1000,"user::write_limit":1000,"read_limit":1000,"write_limit":1000,"user::read_limit_seconds":60,"user::write_limit_seconds":60,"read_limit_seconds":60,"write_limit_seconds":60,"user::reads":"2","reads":"0","user::writes":"2","writes":"0","instance":"01.report-processor.test175158.nym2","version":"1.72.632_v2_obs_build","time":1478.1138896942,"start_microtime":1517333690,"warnings":[],"api_cache_hit":"0","output_term":"report_id"}}}
+
+'
+    http_version: 
+  recorded_at: Tue, 30 Jan 2018 17:34:49 GMT
+- request:
+    method: get
+    uri: https://api-test.appnexus.com/report?id=89543e08ce3ec7dccab3b5fb2e29f8a1&num_elements=100&start_element=0
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Authorization:
+      - authn:171678:a21bfc20a8cb3:nym2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '1473'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Tue, 30 Jan 2018 17:34:52 GMT
+      Server:
+      - Apache
+      Vary:
+      - Authorization
+      X-An-Requestid:
+      - 67465eafedcc9231
+      X-Count-Read:
+      - user:3,member:0,serviceHostUser:1,serviceHostMember:0,hostUser:3,hostMember:0,ip:0
+      X-Count-Write:
+      - user:2,member:0,serviceHostUser:1,serviceHostMember:0,hostUser:2,hostMember:0,ip:0
+      X-Rate-Limits:
+      - cru=3;crm=3;cwu=2;cwm=2;lru=1000;lrm=1000;lwu=1000;lwm=1000
+      X-Ratelimit-Read:
+      - '1000'
+      X-Ratelimit-Service:
+      - 1000-Default
+      X-Ratelimit-System:
+      - 1000-Default
+      X-Ratelimit-Write:
+      - '1000'
+      X-Route:
+      - "/report"
+      X-Route-Time:
+      - '178'
+    body:
+      encoding: UTF-8
+      string: '{"response":{"status":"OK","report":{"id":"89543e08ce3ec7dccab3b5fb2e29f8a1","name":"","created_on":"2018-01-30
+        17:34:50","cache_hit":false,"fact_cache_hit":false,"fact_cache_error":"","json_request":"{\"report\":{\"format\":\"csv\",\"timezone\":\"UTC\",\"report_type\":\"advertiser_analytics\",\"start_date\":\"2018-01-15
+        00:00:00\",\"end_date\":\"2018-01-16 00:00:00\",\"columns\":[\"day\",\"campaign_id\",\"advertiser_currency\",\"spend_adv_curr\",\"clicks\",\"imps\"],\"filters\":[{\"buyer_member_id\":\"487\"},{\"member_id\":\"487\"},{\"advertiser_id\":\"2301169\"}],\"reporting_decimal_type\":\"decimal\",\"use_cache\":true},\"extraction_version\":\"refactored\",\"end_date\":1513861200,\"start_date\":1515974400,\"user_id\":\"171678\"}","header_info":"Report
+        type: advertiser_analyticss\nReport ID: 89543e08ce3ec7dccab3b5fb2e29f8a1\n","user_id":"171678","member_id":"487","bidder_id":"2","entity_id":"487","row_count":null,"report_size":null},"execution_status":"pending","_was_this_status_cached_":0,"dbg_info":{"user::read_limit":1000,"user::write_limit":1000,"read_limit":1000,"write_limit":1000,"user::read_limit_seconds":60,"user::write_limit_seconds":60,"read_limit_seconds":60,"write_limit_seconds":60,"user::reads":"3","reads":"0","user::writes":"2","writes":"0","instance":"01.report-processor.test175158.nym2","version":"1.72.632_v2_obs_build","time":206.18510246277,"start_microtime":1517333692,"warnings":[],"api_cache_hit":"0","output_term":"report"}}}
+
+'
+    http_version: 
+  recorded_at: Tue, 30 Jan 2018 17:34:50 GMT
+- request:
+    method: get
+    uri: https://api-test.appnexus.com/report?id=89543e08ce3ec7dccab3b5fb2e29f8a1&num_elements=100&start_element=0
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Authorization:
+      - authn:171678:a21bfc20a8cb3:nym2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '1648'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Tue, 30 Jan 2018 17:35:52 GMT
+      Server:
+      - Apache
+      Vary:
+      - Authorization
+      X-An-Requestid:
+      - 423477cd3de6829d
+      X-Count-Read:
+      - user:1,member:0,serviceHostUser:1,serviceHostMember:0,hostUser:1,hostMember:0,ip:0
+      X-Count-Write:
+      - user:0,member:0,serviceHostUser:0,serviceHostMember:0,hostUser:0,hostMember:0,ip:0
+      X-Rate-Limits:
+      - cru=1;crm=1;cwu=0;cwm=0;lru=1000;lrm=1000;lwu=1000;lwm=1000
+      X-Ratelimit-Read:
+      - '1000'
+      X-Ratelimit-Service:
+      - 1000-Default
+      X-Ratelimit-System:
+      - 1000-Default
+      X-Ratelimit-Write:
+      - '1000'
+      X-Route:
+      - "/report"
+      X-Route-Time:
+      - '227'
+    body:
+      encoding: UTF-8
+      string: '{"response":{"status":"OK","report":{"id":"89543e08ce3ec7dccab3b5fb2e29f8a1","name":"","created_on":"2018-01-30
+        17:34:50","cache_hit":false,"fact_cache_hit":false,"fact_cache_error":"","json_request":"{\"report\":{\"format\":\"csv\",\"timezone\":\"UTC\",\"report_type\":\"advertiser_analytics\",\"start_date\":\"2018-01-15
+        00:00:00\",\"end_date\":\"2018-01-16 00:00:00\",\"columns\":[\"day\",\"campaign_id\",\"advertiser_currency\",\"spend_adv_curr\",\"clicks\",\"imps\"],\"filters\":[{\"buyer_member_id\":\"487\"},{\"member_id\":\"487\"},{\"advertiser_id\":\"2301169\"}],\"reporting_decimal_type\":\"decimal\",\"use_cache\":true},\"extraction_version\":\"refactored\",\"end_date\":1513861200,\"start_date\":1515974400,\"user_id\":\"171678\"}","header_info":"Report
+        type: advertiser_analyticss\nReport ID: 89543e08ce3ec7dccab3b5fb2e29f8a1\nRun
+        at: 2018-01-30 17:35:53 UTC\nStart date: 2018-01-15 00:00:00 UTC\nEnd date:
+        2017-12-21 13:00:00 UTC\nTimezone: UTC\n","user_id":"171678","member_id":"487","bidder_id":"2","entity_id":"487","row_count":0,"report_size":64,"url":"\/report-download?id=89543e08ce3ec7dccab3b5fb2e29f8a1"},"execution_status":"ready","_was_this_status_cached_":0,"dbg_info":{"user::read_limit":1000,"user::write_limit":1000,"read_limit":1000,"write_limit":1000,"user::read_limit_seconds":60,"user::write_limit_seconds":60,"read_limit_seconds":60,"write_limit_seconds":60,"user::reads":"1","reads":"0","user::writes":"0","writes":"0","instance":"01.report-processor.test175158.nym2","version":"1.72.632_v2_obs_build","time":1037.2540950775,"start_microtime":1517333752,"warnings":[],"api_cache_hit":"0","output_term":"report"}}}
+
+'
+    http_version: 
+  recorded_at: Tue, 30 Jan 2018 17:35:51 GMT
+- request:
+    method: get
+    uri: https://api-test.appnexus.com/report-download?id=89543e08ce3ec7dccab3b5fb2e29f8a1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Authorization:
+      - authn:171678:a21bfc20a8cb3:nym2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Tue, 30 Jan 2018 17:35:53 GMT
+      Server:
+      - Apache
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Authorization
+      X-An-Requestid:
+      - ede5749972905a
+      X-Count-Read:
+      - user:2,member:0,serviceHostUser:1,serviceHostMember:0,hostUser:2,hostMember:0,ip:0
+      X-Count-Write:
+      - user:0,member:0,serviceHostUser:0,serviceHostMember:0,hostUser:0,hostMember:0,ip:0
+      X-Rate-Limits:
+      - cru=2;crm=2;cwu=0;cwm=0;lru=1000;lrm=1000;lwu=1000;lwm=1000
+      X-Ratelimit-Read:
+      - '1000'
+      X-Ratelimit-Service:
+      - 1000-Default
+      X-Ratelimit-System:
+      - 1000-Default
+      X-Ratelimit-Write:
+      - '1000'
+      X-Route:
+      - "/report-download"
+      X-Route-Time:
+      - '32'
+    body:
+      encoding: UTF-8
+      string: "day,campaign_id,advertiser_currency,spend_adv_curr,clicks,imps\r\n"
+    http_version: 
+  recorded_at: Tue, 30 Jan 2018 17:35:51 GMT
+recorded_with: VCR 4.0.0
