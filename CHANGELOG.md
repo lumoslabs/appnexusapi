@@ -1,3 +1,6 @@
+## 1.2.0
+- Add `ReportService` class to allow pulling reports from the API
+
 ## 1.1.0
 - Add `Resource#save` method to allow saving resources that have been modified with `update`
 - Replace `Pester` gem with `Retriable`

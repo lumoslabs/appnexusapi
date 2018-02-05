@@ -31,7 +31,15 @@ module AppnexusApi
           end
 
           return if response.body.empty?
-          body = JSON.parse(response.body).fetch('response', {})
+
+          body =
+            begin
+              JSON.parse(response.body).fetch('response', {})
+            rescue JSON::ParserError
+              nil
+            end
+
+          return unless body
 
           if body['error_code'] == RATE_EXCEEDED_ERROR
             raise AppnexusApi::RateLimitExceeded, "Retry after #{response.response_headers['retry-after']}s"

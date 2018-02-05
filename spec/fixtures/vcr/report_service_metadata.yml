@@ -1,0 +1,100 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api-test.appnexus.com/auth
+    body:
+      encoding: UTF-8
+      string: '{"auth":{"username":"<APPNEXUS_USERNAME>","password":"<APPNEXUS_PASSWORD>"}}'
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '262'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jan 2018 17:26:01 GMT
+      Set-Cookie:
+      - HBFAPI_SESSID=authn%3A171678%3Add3d241c42b33%3Anym2; Path=/
+      - IBAPI_SESSID=authn%3A171678%3Add3d241c42b33%3Anym2; Path=/
+      X-An-Requestid:
+      - e6af6872e280762b
+      X-Route:
+      - "/auth"
+      X-Route-Time:
+      - '508'
+    body:
+      encoding: UTF-8
+      string: '{"response":{"status":"OK","token":"authn:171678:dd3d241c42b33:nym2","dbg_info":{"instance":"01.authentication-api.test175158.nym2","time":507,"start_time":"2018-01-30T17:26:01.466Z","version":"1.2.0","trace_id":"e6af6872e280762b","span_id":"e6af6872e280762b"}}}'
+    http_version: 
+  recorded_at: Tue, 30 Jan 2018 17:26:00 GMT
+- request:
+    method: get
+    uri: https://api-test.appnexus.com/report?meta=advertiser_analytics&num_elements=100&start_element=0
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Authorization:
+      - authn:171678:dd3d241c42b33:nym2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '7971'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Tue, 30 Jan 2018 17:26:02 GMT
+      Server:
+      - Apache
+      Vary:
+      - Authorization
+      X-An-Requestid:
+      - e7de3c2d17386d38
+      X-Count-Read:
+      - user:3,member:0,serviceHostUser:1,serviceHostMember:0,hostUser:3,hostMember:0,ip:0
+      X-Count-Write:
+      - user:0,member:0,serviceHostUser:0,serviceHostMember:0,hostUser:0,hostMember:0,ip:0
+      X-Rate-Limits:
+      - cru=3;crm=3;cwu=0;cwm=0;lru=1000;lrm=1000;lwu=1000;lwm=1000
+      X-Ratelimit-Read:
+      - '1000'
+      X-Ratelimit-Service:
+      - 1000-Default
+      X-Ratelimit-System:
+      - 1000-Default
+      X-Ratelimit-Write:
+      - '1000'
+      X-Route:
+      - "/report"
+      X-Route-Time:
+      - '720'
+    body:
+      encoding: UTF-8
+      string: '{"response":{"status":"OK","meta":{"time_granularity":"hourly","columns":[{"column":"hour","type":"date"},{"column":"day","type":"date"},{"column":"month","type":"date"},{"column":"buyer_member_id","type":"int"},{"column":"seller_member_id","type":"int"},{"column":"seller_member_name","type":"string"},{"column":"seller_member","type":"string"},{"column":"line_item_id","type":"int"},{"column":"line_item_name","type":"string"},{"column":"line_item","type":"string"},{"column":"campaign_id","type":"int"},{"column":"campaign_name","type":"string"},{"column":"campaign","type":"string"},{"column":"size","type":"string"},{"column":"geo_country","type":"string"},{"column":"geo_country_name","type":"string"},{"column":"inventory_class","type":"string"},{"column":"imps","type":"int"},{"column":"clicks","type":"int"},{"column":"total_convs","type":"int"},{"column":"convs_rate","type":"double"},{"column":"conv_rate","type":"double"},{"column":"ctr","type":"double"},{"column":"bid_type","type":"string"},{"column":"seller_type","type":"string"},{"column":"imp_type","type":"string"},{"column":"imp_type_id","type":"int"},{"column":"attributed_revenue","type":"money"},{"column":"total_revenue","type":"money"},{"column":"post_view_convs","type":"int"},{"column":"attributed_pv_revenue","type":"money"},{"column":"post_view_revenue","type":"money"},{"column":"post_click_convs","type":"int"},{"column":"attributed_pc_revenue","type":"money"},{"column":"post_click_revenue","type":"money"},{"column":"post_view_convs_rate","type":"double"},{"column":"post_click_convs_rate","type":"double"},{"column":"spend","type":"money"},{"column":"media_cost","type":"money"},{"column":"cpm","type":"money"},{"column":"ecpm","type":"money"},{"column":"cpc","type":"money"},{"column":"ecpc","type":"money"},{"column":"cpa","type":"money"},{"column":"ecpa","type":"money"},{"column":"click_convs_rate","type":"double"},{"column":"click_conv_rate","type":"double"},{"column":"rpm","type":"money"},{"column":"ppm","type":"money"},{"column":"advertiser_currency","type":"string"},{"column":"spend_adv_curr","type":"money"},{"column":"ecpm_adv_curr","type":"money"},{"column":"ecpc_adv_curr","type":"money"},{"column":"ecpa_adv_curr","type":"money"},{"column":"advertiser_id","type":"int"},{"column":"post_view_conversion_pixel","type":"int"},{"column":"post_view_convs_pixel","type":"int"},{"column":"post_click_conversion_pixel","type":"int"},{"column":"post_click_convs_pixel","type":"int"},{"column":"post_view_revenue_pixel","type":"money"},{"column":"post_click_revenue_pixel","type":"money"},{"column":"total_revenue_pixel","type":"money"},{"column":"pixel_id","type":"int"},{"column":"insertion_order_id","type":"int"},{"column":"insertion_order_name","type":"string"},{"column":"insertion_order","type":"string"},{"column":"adjustment_id","type":"int"},{"column":"convs_per_mm","type":"double"},{"column":"supply_type","type":"string"},{"column":"venue","type":"int"},{"column":"click_thru_pct","type":"double"},{"column":"campaign_priority","type":"int"},{"column":"insertion_order_code","type":"string"},{"column":"line_item_code","type":"string"},{"column":"campaign_code","type":"string"},{"column":"advertiser_code","type":"string"},{"column":"publisher_code","type":"string"},{"column":"user_group_for_campaign","type":"string"},{"column":"creative_recency_bucket_id","type":"string"},{"column":"creative_recency_bucket","type":"string"},{"column":"creative_frequency_bucket_id","type":"string"},{"column":"creative_frequency_bucket","type":"string"},{"column":"publisher_id","type":"int"},{"column":"publisher_name","type":"string"},{"column":"publisher","type":"string"},{"column":"placement_id","type":"int"},{"column":"placement_code","type":"string"},{"column":"placement_name","type":"string"},{"column":"placement","type":"string"},{"column":"member_id","type":"int"},{"column":"creative_id","type":"int"},{"column":"creative_name","type":"string"},{"column":"creative","type":"string"},{"column":"mediatype","type":"string"},{"column":"media_type","type":"string"},{"column":"media_type_id","type":"int"},{"column":"deal_id","type":"int"},{"column":"deal_name","type":"string"},{"column":"deal","type":"string"},{"column":"deal_code","type":"string"},{"column":"imps_viewed","type":"int"},{"column":"view_measured_imps","type":"int"},{"column":"view_rate","type":"double"},{"column":"view_measurement_rate","type":"double"},{"column":"age_bucket_id","type":"int"},{"column":"inventory_source_id","type":"int"},{"column":"age_bucket","type":"string"},{"column":"gender","type":"string"},{"column":"inventory_source","type":"string"},{"column":"inventory_source_name","type":"string"},{"column":"is_remarketing","type":"string"},{"column":"billing_period_start_date","type":"datetime"},{"column":"billing_period_end_date","type":"datetime"},{"column":"viewdef_definition_id","type":"int"},{"column":"viewdef_viewed_imps","type":"int"},{"column":"viewdef_view_rate","type":"double"},{"column":"mediatype_id","type":"string"},{"column":"imps_master_creative","type":"int"},{"column":"billing_period_external_code","type":"int"}],"label_fields":["user_group_for_campaign"],"filters":[{"column":"hour","type":"date"},{"column":"day","type":"date"},{"column":"month","type":"date"},{"column":"buyer_member_id","type":"int"},{"column":"seller_member_id","type":"int"},{"column":"line_item_id","type":"int"},{"column":"campaign_id","type":"int"},{"column":"size","type":"string"},{"column":"geo_country","type":"string"},{"column":"inventory_class","type":"string"},{"column":"bid_type","type":"string"},{"column":"seller_type","type":"string"},{"column":"imp_type","type":"string"},{"column":"imp_type_id","type":"int"},{"column":"advertiser_currency","type":"string"},{"column":"advertiser_id","type":"int"},{"column":"pixel_id","type":"int"},{"column":"insertion_order_id","type":"int"},{"column":"adjustment_id","type":"int"},{"column":"venue","type":"int"},{"column":"user_group_for_campaign","type":"string"},{"column":"publisher_id","type":"int"},{"column":"placement_id","type":"int"},{"column":"member_id","type":"int"},{"column":"creative_id","type":"int"},{"column":"media_type_id","type":"int"},{"column":"deal_id","type":"int"},{"column":"mediatype_id","type":"string"}],"havings":[{"column":"imps"},{"column":"clicks"},{"column":"total_convs"},{"column":"convs_rate"},{"column":"conv_rate"},{"column":"ctr"},{"column":"attributed_revenue"},{"column":"total_revenue"},{"column":"post_view_convs"},{"column":"attributed_pv_revenue"},{"column":"post_view_revenue"},{"column":"post_click_convs"},{"column":"attributed_pc_revenue"},{"column":"post_click_revenue"},{"column":"post_view_convs_rate"},{"column":"post_click_convs_rate"},{"column":"spend"},{"column":"media_cost"},{"column":"cpm"},{"column":"ecpm"},{"column":"cpc"},{"column":"ecpc"},{"column":"cpa"},{"column":"ecpa"},{"column":"rpm"},{"column":"ppm"},{"column":"spend_adv_curr"},{"column":"ecpm_adv_curr"},{"column":"ecpc_adv_curr"},{"column":"ecpa_adv_curr"},{"column":"convs_per_mm"},{"column":"click_thru_pct"},{"column":"imps_viewed"},{"column":"view_measured_imps"},{"column":"view_rate"},{"column":"view_measurement_rate"},{"column":"viewdef_definition_id"},{"column":"viewdef_viewed_imps"},{"column":"viewdef_view_rate"}],"time_intervals":["current_hour","last_hour","last_48_hours","today","yesterday","last_7_days","month_to_date","quarter_to_date","last_month","lifetime","mtd","last_30_days","month_to_yesterday","last_2_days"]},"dbg_info":{"user::read_limit":1000,"user::write_limit":1000,"read_limit":1000,"write_limit":1000,"user::read_limit_seconds":60,"user::write_limit_seconds":60,"read_limit_seconds":60,"write_limit_seconds":60,"user::reads":"3","reads":"0","user::writes":"0","writes":"0","instance":"01.report-processor.test175158.nym2","version":"1.72.632_v2_obs_build","time":1246.8280792236,"start_microtime":1517333162,"warnings":[],"api_cache_hit":"0","output_term":"meta"}}}
+
+'
+    http_version: 
+  recorded_at: Tue, 30 Jan 2018 17:26:01 GMT
+recorded_with: VCR 4.0.0
