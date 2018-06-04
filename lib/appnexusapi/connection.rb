@@ -69,10 +69,11 @@ module AppnexusApi
     private
 
     def run_request(method, route, body, headers)
-      login unless is_authorized?
       response = {}
 
       Retriable.retriable(on: Unauthorized, on_retry: Proc.new { logout }) do
+        login unless is_authorized?
+
         Retriable.retriable(on: RateLimitExceeded, on_retry: RATE_LIMIT_WAITER) do
           begin
             response = @connection.run_request(

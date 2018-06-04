@@ -1,3 +1,6 @@
+## 1.2.1
+- Fix OAuth expiration handling
+
 ## 1.2.0
 - Add `ReportService` class to allow pulling reports from the API
 
